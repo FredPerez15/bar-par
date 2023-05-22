@@ -74,6 +74,17 @@ class RecipeById(Resource):
         if not recipe_by_id:
             return make_response({"error": "Recipe not found"}, 404)
         return make_response(recipe_by_id.to_dict(), 200)
+    
+    def patch(self, id):
+        data = request.get_json()
+        recipe_by_id = Recipe.query.filter_by(id=id).first()
+        if not recipe_by_id:
+            return make_response({"error": "recipe not found"}, 400)
+        for attr in data:
+            setattr(recipe_by_id, attr, data[attr])
+        db.session.add(recipe_by_id)
+        db.session.commit()
+        return make_response(recipe_by_id.to_dict(), 202)
 
     def delete(self, id):
         recipe_by_id = Recipe.query.filter_by(id=id).first()
