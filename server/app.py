@@ -3,7 +3,7 @@ from flask_cors import CORS
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from flask_restful import Api, Resource
-from models import db, User, Recipe, Ingridient, Inventory
+from models import db, User, Recipe, Ingredient, Inventory
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://bar_par_2cd4_user:8hBNqbTMIe4RUlHMJ3eTh1q87zhqM8S0@dpg-chihb1qk728hm23fp9g0-a.ohio-postgres.render.com/bar_par_2cd4'
@@ -75,14 +75,19 @@ class RecipeById(Resource):
             return make_response({"error": "Recipe not found"}, 404)
         return make_response(recipe_by_id.to_dict(), 200)
 
+    def delete(self, id):
+        recipe_by_id = Recipe.query.filter_by(id=id).first()
+        db.session.delete(recipe_by_id)
+        db.session.commit()
+
 api.add_resource(RecipeById, '/recipes/<int:id>')
 
 
-class Ingridients(Resource):
+class Ingredients(Resource):
     def post(self):
         data = request.get_json()
         try:
-            new_ing = Ingridient(
+            new_ing = Ingredient(
                 name= data['name'],
                 ing_type= data['ing_type'],
                 par_level= data['par_level']
@@ -93,7 +98,7 @@ class Ingridients(Resource):
         except Exception as ex:
                 return make_response({"errors": [ex.__str__()]}, 400)
 
-api.add_resource(Ingridients, '/ingridients')
+api.add_resource(Ingredients, '/ingredients')
 
 
 if __name__ == '__main__':

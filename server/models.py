@@ -59,14 +59,14 @@ class Recipe(db.Model, SerializerMixin):
             raise ValueError('Name is required')
         return name
 
-class Ingridient(db.Model, SerializerMixin):
+class Ingredient(db.Model, SerializerMixin):
     __tablename__ = 'ingredients'
 
     serialize_rules = ('-created_at', '-updated_at', '-recipe_id')
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String)
-    ing_type = db.Column(db.String)
+    ing_type = db.Column(db.String, nullable=False)
     par_level = db.Column(db.Integer)
     recipe_id = db.Column(db.Integer, db.ForeignKey('recipes.id'))
     created_at = db.Column(db.DateTime, server_default=db.func.now())
@@ -81,7 +81,7 @@ class Ingridient(db.Model, SerializerMixin):
     @validates('ing_type')
     def valid_username(self, key, ing_type):
         if not ing_type:
-            raise ValueError('Type of Ingridient is required')
+            raise ValueError('Type of Ingredient is required')
         return ing_type
 
 class Inventory(db.Model, SerializerMixin):
@@ -91,7 +91,7 @@ class Inventory(db.Model, SerializerMixin):
 
     id = db.Column(db.Integer, primary_key=True)
     quantity = db.Column(db.Integer)
-    ingridient_id = db.Column(db.Integer, db.ForeignKey('ingredients.id'))
+    ingredient_id = db.Column(db.Integer, db.ForeignKey('ingredients.id'))
     recipe_id = db.Column(db.Integer, db.ForeignKey('recipes.id')) 
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     updated_at = db.Column(db.DateTime, onupdate=db.func.now())
