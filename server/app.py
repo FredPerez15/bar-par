@@ -17,10 +17,6 @@ migrate = Migrate(app, db)
 CORS(app)
 api = Api(app)
 
-@app.route('/')
-def index():
-    return '<h1>bar inventory API is running!</h1>'
-
 
 class Login(Resource):
     def post(self):
@@ -30,7 +26,7 @@ class Login(Resource):
             try:
                 new_user = User(
                     username = data['username'],
-                    email = data['email']
+                    email = data['email'],
                 )
             except Exception as ex:
                 return make_response({"errors": [ex.__str__()]}, 422)
@@ -58,7 +54,8 @@ class Recipes(Resource):
         try:
             new_rec = Recipe(
                 name = data['name'],
-                description = data['description']
+                description = data['description'],
+                user_id= data['user_id']
             )
             db.session.add(new_rec)
             db.session.commit()

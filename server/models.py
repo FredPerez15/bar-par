@@ -9,7 +9,7 @@ db = SQLAlchemy()
 class User(db.Model, SerializerMixin):
     __tablename__ = 'users'
 
-    serialize_rules = ('-created_at', '-updated_at')
+    serialize_rules = ('-created_at', '-updated_at', 'recipes')
 
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String, unique=True)
@@ -41,7 +41,7 @@ class User(db.Model, SerializerMixin):
 class Recipe(db.Model, SerializerMixin):
     __tablename__ = 'recipes'
 
-    serialize_rules = ('-created_at', '-updated_at', '-inventories', 'ingredients')
+    serialize_rules = ('-created_at', '-updated_at', '-inventories', '-user', 'ingredients')
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String)
